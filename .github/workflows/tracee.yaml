@@ -1,0 +1,16 @@
+name: Tracee Scan Example
+on: [push]
+
+jobs:
+  example_job:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Tracee Pipeline Scan
+      uses: simar7/tracee-action@master
+#     uses: docker://simar7/golang-github-action:latest
+#     uses: docker://simar7/golang-github-action:lite
+      with:
+        args: "--name tracee --rm --privileged -v /proc:/proc -v /boot:/boot -v /lib/modules/:/lib/modules/:ro -v /usr/src:/usr/src:ro -v /tmp/tracee:/tmp/tracee"
+        profile: true
+        fail-on-diff: true
