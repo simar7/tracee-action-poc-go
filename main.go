@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"io"
 	"os"
 
 	"github.com/docker/docker/api/types"
@@ -24,11 +23,10 @@ func startTracee() {
 		panic(err)
 	}
 
-	reader, err := cli.ImagePull(ctx, "aquasecurity/tracee:latest", types.ImagePullOptions{})
+	_, err = cli.ImagePull(ctx, "aquasec/tracee:latest", types.ImagePullOptions{})
 	if err != nil {
 		panic(err)
 	}
-	io.Copy(os.Stdout, reader)
 
 	resp, err := cli.ContainerCreate(ctx, &container.Config{
 		Image: "tracee",
