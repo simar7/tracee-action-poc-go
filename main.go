@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"log"
 	"os"
@@ -27,12 +26,11 @@ func startTracee(args []string) {
 	}
 
 	imageName := "simar7/trcghaction:latest"
-
-	out, err := cli.ImagePull(ctx, imageName, types.ImagePullOptions{})
+	_, err = cli.ImagePull(ctx, imageName, types.ImagePullOptions{})
 	if err != nil {
 		panic(err)
 	}
-	io.Copy(os.Stdout, out)
+	//io.Copy(os.Stdout, out)
 
 	resp, err := cli.ContainerCreate(ctx, &container.Config{
 		Image: imageName,
