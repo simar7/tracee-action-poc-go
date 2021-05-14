@@ -6,9 +6,8 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"os/exec"
 	"strings"
-
-	"github.com/sethvargo/go-githubactions"
 
 	"github.com/docker/docker/api/types/mount"
 
@@ -26,10 +25,12 @@ func startTracee(args []string) {
 	}
 
 	imageName := "simar7/trcghaction:latest"
-	_, err = cli.ImagePull(ctx, imageName, types.ImagePullOptions{})
-	if err != nil {
-		panic(err)
-	}
+	co, err := exec.Command("docker", "pull", imageName).Output()
+	fmt.Println(string(co), err)
+	//_, err = cli.ImagePull(ctx, imageName, types.ImagePullOptions{})
+	//if err != nil {
+	//	panic(err)
+	//}
 	//io.Copy(os.Stdout, out)
 
 	resp, err := cli.ContainerCreate(ctx, &container.Config{
@@ -60,8 +61,9 @@ func startTracee(args []string) {
 				Target: "/usr/src",
 			},
 			{
-				Type:   mount.TypeBind,
-				Source: "/tmp/tracee",
+				Type: mount.TypeBind,
+				//Source: "/tmp/tracee",
+				Source: "/home/runner/work/tracee-action/tracee-action",
 				Target: "/tmp/tracee",
 			},
 		},
@@ -122,10 +124,15 @@ func findStringinSlice(needle string, haystack []string) bool {
 }
 
 func main() {
-	fmt.Println(os.MkdirAll("/tmp/tracee", 0755))
-	//profile := "start"
+	//fmt.Println(os.MkdirAll("/tmp/tracee2", 0777))
+	//cmd := exec.Command("ls", "-lrRth", "/tmp")
+	//cmd.Stdout = os.Stdout
+	//cmd.Stderr = os.Stdout
+	//cmd.Run()
+
+	profile := "start"
 	//profile := "stop"
-	profile := githubactions.GetInput("profile")
+	//profile := githubactions.GetInput("profile")
 	switch strings.ToLower(profile) {
 	case "start":
 		startTracee([]string{"trace", "--output", "out-file:/tmp/tracee/tracee.stdout", "--capture", "exec", "--capture", "profile"})

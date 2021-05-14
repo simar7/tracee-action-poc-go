@@ -5,19 +5,19 @@ inputs:
   profile:
     description: 'Profile of a running pipeline (options: start, stop)'
     required: true
-  fail-on-diff:
-    description: "Fails pipeline if profile difference(s) are found"
-    required: false
-    default: 'false'
-  create-pr:
-    description: "Create a PR with profile changes if any are found"
-    required: false
-    default: 'false'
+#  fail-on-diff:
+#    description: "Fails pipeline if profile difference(s) are found"
+#    required: false
+#    default: 'false'
+#  create-pr:
+#    description: "Create a PR with profile changes if any are found"
+#    required: false
+#    default: 'false'
 
 runs:
   using: 'docker'
   image: "Dockerfile"
   args:
   - '-a ${{ inputs.profile }}'
-  - '-b ${{ inputs.fail-on-diff }}'
-  - '-c ${{ inputs.create-pr }}'
+#  - '-b ${{ inputs.fail-on-diff }}'
+#  - '-c ${{ inputs.create-pr }}'

@@ -1,0 +1,26 @@
+name: 'Run Tracee Scan'
+description: 'Runtime Security and Forensics using eBPF'
+inputs:
+  profile:  # id of input
+    modw: 'Start/Stop Tracee profiling'
+    required: true
+#outputs:
+#  tracee-profile:
+#    description: "Random number"
+#    value: ${{ steps.random-number-generator.outputs.random-id }}
+runs:
+  using: "composite"
+  steps:
+  - run: |
+      docker pull simar7/trcghaction:latest
+      docker run --name tracee-profiler --rm --privileged \
+      -v /proc:/proc -v /boot:/boot -v /lib/modules/:/lib/modules/:ro \
+      -v /usr/src:/usr/src:ro -v $(pwd):/tmp/tracee simar7/trcghaction:latest \
+      --output out-file:"/tmp/tracee/tracee.stdout.log" \
+      --capture exec --capture profile &
+    shell: bash
+  - id: random-number-generator
+    run: echo "::set-output name=random-id::$(echo $RANDOM)"
+    shell: bash
+  - run: ${{ github.action_path }}/goodbye.sh
+    shell: bash
