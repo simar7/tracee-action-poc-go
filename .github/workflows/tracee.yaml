@@ -1,6 +1,8 @@
 name: Tracee Background Scan
 on:
   push:
+    branches:
+    - "*"
 
 jobs:
   Tracee-Scan:
@@ -8,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - uses: actions/checkout@v2
+
     - name: Start Tracee profiling in background
       run: |
         docker pull simar7/trcghaction:latest
@@ -33,7 +37,16 @@ jobs:
         echo "TRACEE PROFILER LOGS"
         cat out/tracee.profile
 
-    - uses: actions/upload-artifact@v2
+#    - uses: actions/upload-artifact@v2
+#      with:
+#        name: Profiler Reports
+#        path: tracee.profile*
+
+    - name: pull-request
+      uses: technote-space/create-pr-action@v2
       with:
-        name: Profiler Reports
-        path: tracee.profile*
+          COMMIT_MESSAGE: 'tracee scan results'
+          COMMIT_NAME: 'GitHub Actions'
+          COMMIT_EMAIL: 'example@example.com'
+          PR_BRANCH_NAME: 'tracee-scan-results-${PR_ID}'
+          PR_TITLE: 'tracee scan results'
