@@ -124,6 +124,7 @@ func findStringinSlice(needle string, haystack []string) bool {
 }
 
 func main() {
+	fmt.Println(os.Mkdir("/tmp/tracee", 0755))
 	//profile := "start"
 	//profile := "stop"
 	profile := githubactions.GetInput("profile")
