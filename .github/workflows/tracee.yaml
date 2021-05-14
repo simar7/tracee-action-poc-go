@@ -4,21 +4,21 @@ on: [push]
 jobs:
   example_job:
     runs-on: ubuntu-latest
-#    container:
-#      image: simar7/tracee-action@master
-#      volumes:
-#        - /proc:/proc
-#        - /boot:/boot
-#        - /lib/modules/:/lib/modules
-#        - /usr/src:/usr/src
-#        - /tmp/tracee:/tmp/tracee
-#      options: --name tracee --rm --privileged
 
     steps:
-    - name: Tracee Pipeline Scan
+    - name: Start Tracee Pipeline Scan
       uses: simar7/tracee-action@master
 #     uses: docker://simar7/golang-github-action:latest
 #     uses: docker://simar7/golang-github-action:lite
       with:
-        profile: true
+        profile: start
+
+    - name: Run strace
+      run: |
+        strace ls
+
+    - name: Stop Tracee Pipeline Scan
+      uses: simar7/tracee-action@master
+      with:
+        profile: stop
         fail-on-diff: true

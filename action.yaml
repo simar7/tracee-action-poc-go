@@ -3,9 +3,8 @@ description: 'Runtime Security and Forensics using eBPF'
 author: 'Aqua Security'
 inputs:
   profile:
-    description: 'Profile running pipeline'
-    required: false
-    default: 'false'
+    description: 'Profile of a running pipeline (options: start, stop)'
+    required: true
   fail-on-diff:
     description: "Fails pipeline if profile difference(s) are found"
     required: false
