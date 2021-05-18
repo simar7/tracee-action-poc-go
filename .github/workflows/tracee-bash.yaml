@@ -1,0 +1,72 @@
+#name: Tracee Background Scan
+#on:
+#  push:
+#    branches:
+#    - "*"
+#
+#jobs:
+#  Tracee-Scan:
+#    timeout-minutes: 5
+#    runs-on: ubuntu-latest
+#
+## failed approach: service containers cannot be killed by action steps
+#    services:
+#      tracee-profiler:
+#        image: simar7/tracee-action:latest
+#        volumes:
+#        - /proc:/proc
+#        - /boot:/boot
+#        - /lib/modules/:/lib/modules/
+#        - /usr/src:/usr/src
+#        - /tmp/tracee:/tmp/tracee
+#        options: --name tracee-profiler --rm --privileged # user has to name tracee as this
+#
+## failed approach: this runs all of the steps within this container
+##    container:
+##      image: simar7/tracee-action:bash
+##      volumes:
+##      - /proc:/proc
+##      - /boot:/boot
+##      - /lib/modules/:/lib/modules/
+##      - /usr/src:/usr/src
+##      - ${{ github.workspace }}:/tmp/tracee
+##      options: --name tracee-profiler --rm --privileged
+#
+#    steps:
+#    - uses: actions/checkout@v2
+#
+## failed approach: cannot provide volume mounts here
+##    - name: Start Tracee profiling in background
+##      uses: simar7/tracee-action@master
+##      with:
+##        profile: start
+#
+#    - name: Sleep
+#      run: sleep 15
+#
+#    - name: Show tracee logs
+#      run: docker logs tracee-profiler
+#
+#    - name: Stop Tracee profiling
+#      uses: simar7/tracee-action@bash-entrypoint-and-tracee-container
+#      with:
+#        profile: stop
+#
+#    - name: Show Tracee Profiler logs
+#      run: |
+#        sleep 5
+#        ls -lrth
+#        ls -lrRth /tmp/tracee
+#        docker ps -a
+#        echo "TRACEE STDIO LOGS"
+#        cat /tmp/tracee/tracee.stdout.log
+#        echo "TRACEE PROFILER LOGS"
+#        cat /tmp/tracee/out/tracee.profile
+#
+##    - uses: actions/upload-artifact@v2
+##      with:
+##        name: Profiler Reports
+##        path: tracee.profile*
+#
+##    - name: Create Pull Request
+##      uses: peter-evans/create-pull-request@v3
