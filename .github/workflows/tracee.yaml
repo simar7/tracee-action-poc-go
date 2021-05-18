@@ -33,7 +33,7 @@ jobs:
       run: |
         ls -lrth
         echo "TRACEE STDIO LOGS"
-        cat tracee.stdout.log
+        grep -A10000 -m1 -e 'End of events stream' tracee.stdout.log
         echo "TRACEE PROFILER LOGS"
         cat out/tracee.profile
 
