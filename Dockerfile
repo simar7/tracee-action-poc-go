@@ -1,7 +1,12 @@
-FROM simar7/trcghaction:latest
+FROM simar7/trcghaction:latest as tracee
+
+FROM docker:stable
+COPY --from=tracee /tracee/tracee-ebpf /tracee/tracee-ebpf
 COPY entrypoint.sh /
+
 RUN apk --no-cache add bash
 RUN chmod +x /entrypoint.sh
+
 ENTRYPOINT ["/entrypoint.sh"]
 
 

@@ -1,46 +1,46 @@
-name: Tracee Background Scan
-on:
-  push:
-    branches:
-    - "*"
-
-jobs:
-  Tracee-Scan:
-    timeout-minutes: 5
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: Start Tracee profiling in background
-      run: |
-        docker pull simar7/trcghaction:latest
-        docker run --name tracee-profiler --rm --privileged \
-        -v /proc:/proc -v /boot:/boot -v /lib/modules/:/lib/modules/:ro \
-        -v /usr/src:/usr/src:ro -v $(pwd):/tmp/tracee simar7/trcghaction:latest \
-        trace --output out-file:"/tmp/tracee/tracee.stdout.log" \
-        --capture exec --capture profile &
-
-    - name: Run strace ls
-      run: for i in {1..10}; do sleep 2 && strace ls; done
-
-    - name: Stop Tracee profiling
-      run: |
-        docker kill --signal="SIGINT" tracee-profiler
-        docker wait tracee-profiler
-
-    - name: Show Tracee Profiler logs
-      run: |
-        ls -lrth
-        echo "TRACEE STDIO LOGS"
-        cat tracee.stdout.log
-        echo "TRACEE PROFILER LOGS"
-        cat out/tracee.profile
-
-#    - uses: actions/upload-artifact@v2
-#      with:
-#        name: Profiler Reports
-#        path: tracee.profile*
-
-    - name: Create Pull Request
-      uses: peter-evans/create-pull-request@v3
+#name: Tracee Background Scan
+#on:
+#  push:
+#    branches:
+#    - "*"
+#
+#jobs:
+#  Tracee-Scan:
+#    timeout-minutes: 5
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#    - uses: actions/checkout@v2
+#
+#    - name: Start Tracee profiling in background
+#      run: |
+#        docker pull simar7/trcghaction:latest
+#        docker run --name tracee-profiler --rm --privileged \
+#        -v /proc:/proc -v /boot:/boot -v /lib/modules/:/lib/modules/:ro \
+#        -v /usr/src:/usr/src:ro -v $(pwd):/tmp/tracee simar7/trcghaction:latest \
+#        trace --output out-file:"/tmp/tracee/tracee.stdout.log" \
+#        --capture exec --capture profile &
+#
+#    - name: Run strace ls
+#      run: for i in {1..10}; do sleep 2 && strace ls; done
+#
+#    - name: Stop Tracee profiling
+#      run: |
+#        docker kill --signal="SIGINT" tracee-profiler
+#        docker wait tracee-profiler
+#
+#    - name: Show Tracee Profiler logs
+#      run: |
+#        ls -lrth
+#        echo "TRACEE STDIO LOGS"
+#        cat tracee.stdout.log
+#        echo "TRACEE PROFILER LOGS"
+#        cat out/tracee.profile
+#
+##    - uses: actions/upload-artifact@v2
+##      with:
+##        name: Profiler Reports
+##        path: tracee.profile*
+#
+#    - name: Create Pull Request
+#      uses: peter-evans/create-pull-request@v3

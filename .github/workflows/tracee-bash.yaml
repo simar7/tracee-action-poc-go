@@ -1,0 +1,53 @@
+name: Tracee Background Scan
+on:
+  push:
+    branches:
+    - "*"
+
+jobs:
+  Tracee-Scan:
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+
+    container:
+      image: simar7/tracee-action:bash
+      volumes:
+      - /proc:/proc
+      - /boot:/boot
+      - /lib/modules/:/lib/modules/
+      - /usr/src:/usr/src
+      - ${{ github.workspace }}:/tmp/tracee
+      options: --name tracee-profiler --rm --privileged
+
+    steps:
+    - uses: actions/checkout@v2
+
+#    - name: Start Tracee profiling in background
+#      uses: simar7/tracee-action@master
+#      with:
+#        profile: start
+        # cannot provide volume mounts here
+
+    - name: Run strace ls
+      run: for i in {1..10}; do sleep 2 && ls -lrth; done
+
+    - name: Stop Tracee profiling
+      uses: simar7/tracee-action@master
+      with:
+        profile: stop
+
+    - name: Show Tracee Profiler logs
+      run: |
+        ls -lrth
+        echo "TRACEE STDIO LOGS"
+        cat tracee.stdout.log
+        echo "TRACEE PROFILER LOGS"
+        cat out/tracee.profile
+
+#    - uses: actions/upload-artifact@v2
+#      with:
+#        name: Profiler Reports
+#        path: tracee.profile*
+
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v3
